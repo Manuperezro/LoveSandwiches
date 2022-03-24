@@ -12,34 +12,36 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('love_sandwiches')
 
-sales = SHEET.worksheet('sales')
-
-data = sales.get_all_values()
 
 def get_sales_data():
     """ 
     Get Sales figures input from the user
+    Run a while loop to collect a valid string of 6 numbers separated
+    by commas, the loop will repeatdly request data, until it is valid.
     """
     while True:
         print("Please enter sales data from the last market.")
         print("Dta should be six numbers, separated by commas.")
-        print("Examples: 10, 20, 30, 40, 50, 60\n")
+        print("Examples: 10,20,30,40,50,60\n")
 
         data_str = input("Enter your data here: ")
      
         sales_data = data_str.split(",") 
-        # Use the split() method on our data  string, to break it up at the commas. 
+        # Use the split() method on our data  string, 
+        # to break it up at the commas. 
         # This will remove the commas from the string.
-        validate_data(sales_data)
 
-        #Now we can use this returned value(from validate_data) as  the condition for ending our while loop. 
+        # Now we can use this returned value(from validate_data) as  
+        # the condition for ending our while loop. 
         if validate_data(sales_data): 
             print("data is valid!")
             break
 
+    return sales_data
+
 
 # we will pass it a parameter  of “values” which will be our sales data list.
-def validate_data(values): 
+def validate_data(values):
     """
     Inside the try, converts all string values into integers,
     Rises ValueError if strings cannot be converted into int, 
@@ -53,11 +55,23 @@ def validate_data(values):
             )
     except ValueError as e: 
         print(f"Invalid data: {e}, please try again.\n")
-    
-        # If an error is thrown inside our except statement,  we can return False from the programme instead.
+        # If an error is thrown inside our except statement,  
+        # we can return False from the programme instead.
         return False
-
-    #If our function runs without any errors, we can return True after the try except statement has completed.
+    # If our function runs without any errors, we can return True after the try
+    #  except statement has completed.
     return True 
 
+def update_sales_worksheet(data):
+    """
+    Update sales worksheet, add new row with the list daa provided.
+    """
+    print("Updating sales worksheet...\n")
+    sales_worksheet = SHEET.worksheet("sales")
+    sales_worksheet.append_row(data)
+    print("Sales worksheet updated succesfully.\n")
+
+
 data = get_sales_data()
+sales_data = [int(num) for num in data] 
+update_sales_worksheet(sales_data)
