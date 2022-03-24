@@ -20,16 +20,22 @@ def get_sales_data():
     """ 
     Get Sales figures input from the user
     """
-    print("Please enter sales data from the last market.")
-    print("Dta should be six numbers, separated by commas.")
-    print("Examples: 10, 20, 30, 40, 50, 60\n")
+    while True:
+        print("Please enter sales data from the last market.")
+        print("Dta should be six numbers, separated by commas.")
+        print("Examples: 10, 20, 30, 40, 50, 60\n")
 
-    data_str = input("Enter your data here: ")
-    
-    sales_data = data_str.split(",") 
-    # Use the split() method on our data  string, to break it up at the commas. 
-    # This will remove the commas from the string.
-    validate_data(sales_data)
+        data_str = input("Enter your data here: ")
+     
+        sales_data = data_str.split(",") 
+        # Use the split() method on our data  string, to break it up at the commas. 
+        # This will remove the commas from the string.
+        validate_data(sales_data)
+
+        #Now we can use this returned value(from validate_data) as  the condition for ending our while loop. 
+        if validate_data(sales_data): 
+            print("data is valid!")
+            break
 
 
 # we will pass it a parameter  of “values” which will be our sales data list.
@@ -47,5 +53,11 @@ def validate_data(values):
             )
     except ValueError as e: 
         print(f"Invalid data: {e}, please try again.\n")
+    
+        # If an error is thrown inside our except statement,  we can return False from the programme instead.
+        return False
 
-get_sales_data()
+    #If our function runs without any errors, we can return True after the try except statement has completed.
+    return True 
+
+data = get_sales_data()
